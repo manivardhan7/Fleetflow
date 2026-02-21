@@ -1,0 +1,118 @@
+import { useApp } from "../context/AppContext";
+import { Card, KPICard, PageHeader, PrimaryBtn } from "../components/UI";
+
+export default function Analytics() {
+  const { vehicles, trips, fuelLogs, maintenance } = useApp();
+
+  const completedTrips = trips.filter((t) => t.status === "Completed");
+  const totalRevenue = completedTrips.reduce((s, t) => s + (t.revenue || 0), 0);
+  const totalFuel = fuelLogs.reduce((s, f) => s + f.cost, 0);
+  const totalMaintenance = maintenance.reduce((s, m) => s + (m.cost || 0), 0);
+  const totalCost = totalFuel + totalMaintenance;
+  const profit = totalRevenue - totalCost;
+
+  const vehicleStats = vehicles.map((v) => {
+    const vTrips = completedTrips.filter((t) => t.vehicleId === v.id);
+    const vFuel = fuelLogs.filter((f) => f.vehicleId === v.id).reduce((s, f) => s + f.cost, 0);
+    const vMaint = maintenance.filter((m) => m.vehicleId === v.id).reduce((s, m) => s + (m.cost || 0), 0);
+    const vFuelKm = fuelLogs.filter((f) => f.vehicleId === v.id).reduce((s, f) => s + f.kmDriven, 0);
+    const vFuelL = fuelLogs.filter((f) => f.vehicleId === v.id).reduce((s, f) => s + f.liters, 0);
+    const vRev = vTrips.reduce((s, t) => s + (t.revenue || 0), 0);
+    const roi = v.acquisitionCost > 0
+      ? (((vRev - vFuel - vMaint) / v.acquisitionCost) * 100).toFixed(1)
+      : "N/A";
+    const fuelEfficiency = vFuelL > 0 ? (vFuelKm / vFuelL).toFixed(1) : "N/A";
+    return { ...v, tripCount: vTrips.length, revenue: vRev, fuelCost: vFuel, maintCost: vMaint, roi, fuelEfficiency };
+  });
+
+  function exportCSV() {
+    const rows = [
+      ["Vehicle", "Trips", "Revenue (Rs)", "Fuel Cost (Rs)", "Maintenance (Rs)", "ROI %", "Fuel Efficiency (km/L)"],
+    ];
+    vehicleStats.forEach((v) =>
+      rows.push([v.name, v.tripCount, v.revenue, v.fuelCost, v.maintCost, v.roi, v.fuelEfficiency])
+    );
+    const csv = rows.map((r) => r.join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "fleetflow_report.csv";
+    a.click();
+  }
+
+  return (
+    <div>
+      <PageHeader
+        title="Analytics and Reports"
+        subtitle="Operational and financial performance insights"
+        action={<PrimaryBtn onClick={exportCSV}>📥 Export CSV</PrimaryBtn>}
+      />
+
+      {/* Summary KPI Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <KPICard label="Total Revenue"     value={`Rs ${(totalRevenue / 1000).toFixed(0)}K`}    icon="💰" color="text-green-400" />
+        <KPICard label="Total Fuel Cost"   value={`Rs ${(totalFuel / 1000).toFixed(1)}K`}       icon="⛽" color="text-yellow-400" />
+        <KPICard label="Maintenance Cost"  value={`Rs ${(totalMaintenance / 1000).toFixed(1)}K`} icon="🔧" color="text-red-400" />
+        <KPICard label="Net Profit"        value={`Rs ${(profit / 1000).toFixed(0)}K`}           icon="📈" color={profit >= 0 ? "text-cyan-400" : "text-red-400"} />
+      </div>
+
+      {/* Vehicle ROI Table */}
+      <Card className="mb-4">
+        <h2 className="text-sm font-bold text-gray-400 mb-4 uppercase tracking-widest">Vehicle ROI Analysis</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-gray-500 border-b border-gray-700 text-left">
+                <th className="pb-3 font-medium">Vehicle</th>
+                <th className="pb-3 font-medium">Trips Done</th>
+                <th className="pb-3 font-medium">Revenue (Rs)</th>
+                <th className="pb-3 font-medium">Fuel Cost (Rs)</th>
+                <th className="pb-3 font-medium">Maintenance (Rs)</th>
+                <th className="pb-3 font-medium">Fuel Efficiency</th>
+                <th className="pb-3 font-medium">ROI %</th>
+              </tr>
+            </thead>
+            <tbody>
+              {vehicleStats.map((v) => (
+                <tr key={v.id} className="border-b border-gray-700 hover:bg-gray-700 transition-colors">
+                  <td className="py-3 text-white font-semibold">
+                    {v.name}
+                    <div className="text-gray-500 text-xs font-normal">{v.type}</div>
+                  </td>
+                  <td className="py-3 text-gray-400">{v.tripCount}</td>
+                  <td className="py-3 text-green-400">Rs {v.revenue.toLocaleString()}</td>
+                  <td className="py-3 text-yellow-400">Rs {v.fuelCost.toLocaleString()}</td>
+                  <td className="py-3 text-red-400">Rs {v.maintCost.toLocaleString()}</td>
+                  <td className="py-3 text-cyan-400">{v.fuelEfficiency} km/L</td>
+                  <td className="py-3">
+                    <span className={`font-black text-base ${parseFloat(v.roi) > 0 ? "text-cyan-400" : "text-red-400"}`}>
+                      {v.roi}%
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      {/* Total Operational Cost per Vehicle */}
+      <Card>
+        <h2 className="text-sm font-bold text-gray-400 mb-4 uppercase tracking-widest">Total Operational Cost per Vehicle</h2>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {vehicleStats.map((v) => (
+            <div key={v.id} className="bg-gray-700 rounded-xl p-4">
+              <div className="text-white font-bold text-sm mb-2">{v.name}</div>
+              <div className="text-red-400 font-black text-xl">Rs {(v.fuelCost + v.maintCost).toLocaleString()}</div>
+              <div className="text-gray-500 text-xs mt-1">Fuel + Maintenance</div>
+              <div className="mt-2 text-xs text-gray-400">
+                <div>Fuel: Rs {v.fuelCost.toLocaleString()}</div>
+                <div>Maintenance: Rs {v.maintCost.toLocaleString()}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+    </div>
+  );
+}
