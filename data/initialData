@@ -1,0 +1,33 @@
+export const initialVehicles = [
+  { id: "V001", name: "Van-05", model: "Toyota HiAce", plate: "TN01AB1234", type: "Van", capacity: 500, odometer: 12400, status: "Available", acquisitionCost: 850000, acquired: 2021 },
+  { id: "V002", name: "Truck-02", model: "Tata 407", plate: "TN02CD5678", type: "Truck", capacity: 2000, odometer: 45200, status: "On Trip", acquisitionCost: 1500000, acquired: 2020 },
+  { id: "V003", name: "Bike-01", model: "Honda Activa", plate: "TN03EF9012", type: "Bike", capacity: 50, odometer: 8900, status: "In Shop", acquisitionCost: 80000, acquired: 2022 },
+  { id: "V004", name: "Van-08", model: "Mahindra Supro", plate: "TN04GH3456", type: "Van", capacity: 750, odometer: 22100, status: "Available", acquisitionCost: 650000, acquired: 2022 },
+];
+
+export const initialDrivers = [
+  { id: "D001", name: "Alex Kumar", license: "TN1234567", licenseExpiry: "2025-06-30", category: "Van", status: "On Duty", trips: 42, completed: 40, safetyScore: 95, phone: "9876543210" },
+  { id: "D002", name: "Ravi Sharma", license: "TN7654321", licenseExpiry: "2024-12-31", category: "Truck", status: "On Duty", trips: 78, completed: 72, safetyScore: 88, phone: "9123456780" },
+  { id: "D003", name: "Priya Singh", license: "TN9999999", licenseExpiry: "2026-03-15", category: "Bike", status: "Off Duty", trips: 15, completed: 15, safetyScore: 100, phone: "9012345678" },
+  { id: "D004", name: "Mohan Das", license: "TN1111111", licenseExpiry: "2023-11-01", category: "Van", status: "Suspended", trips: 30, completed: 25, safetyScore: 72, phone: "9988776655" },
+];
+
+export const initialTrips = [
+  { id: "T001", vehicleId: "V002", driverId: "D002", origin: "Chennai", destination: "Bangalore", cargo: "Electronics", cargoWeight: 1800, status: "Dispatched", date: "2024-07-10", revenue: 25000 },
+  { id: "T002", vehicleId: "V001", driverId: "D001", origin: "Chennai", destination: "Vellore", cargo: "Garments", cargoWeight: 300, status: "Completed", date: "2024-07-08", revenue: 8000 },
+  { id: "T003", vehicleId: "V004", driverId: "D003", origin: "Chennai", destination: "Pondicherry", cargo: "Food Items", cargoWeight: 200, status: "Completed", date: "2024-07-05", revenue: 5000 },
+];
+
+export const initialMaintenance = [
+  { id: "M001", vehicleId: "V003", type: "Oil Change", date: "2024-07-09", cost: 2500, notes: "Engine oil and filter replaced", status: "In Progress" },
+  { id: "M002", vehicleId: "V002", type: "Tyre Rotation", date: "2024-07-01", cost: 1200, notes: "All 4 tyres rotated", status: "Completed" },
+];
+
+export const initialFuelLogs = [
+  { id: "F001", vehicleId: "V001", tripId: "T002", liters: 22, cost: 2400, date: "2024-07-08", kmDriven: 150 },
+  { id: "F002", vehicleId: "V004", tripId: "T003", liters: 12, cost: 1320, date: "2024-07-05", kmDriven: 145 },
+];
+
+export const initialUsers = [
+  { id: "U001", name: "admin", email: "admin@fleetflow.com", password: "admin123", role: "Manager" },
+];
