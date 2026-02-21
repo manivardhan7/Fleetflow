@@ -6,9 +6,9 @@ export const initialVehicles = [
 ];
 
 export const initialDrivers = [
-  { id: "D001", name: "Alex Kumar", license: "TN1234567", licenseExpiry: "2025-06-30", category: "Van", status: "On Duty", trips: 42, completed: 40, safetyScore: 95, phone: "9876543210" },
-  { id: "D002", name: "Ravi Sharma", license: "TN7654321", licenseExpiry: "2024-12-31", category: "Truck", status: "On Duty", trips: 78, completed: 72, safetyScore: 88, phone: "9123456780" },
-  { id: "D003", name: "Priya Singh", license: "TN9999999", licenseExpiry: "2026-03-15", category: "Bike", status: "Off Duty", trips: 15, completed: 15, safetyScore: 100, phone: "9012345678" },
+  { id: "D001", name: "Alex Kumar", license: "TN1234567", licenseExpiry: "2027-06-30", category: "Van", status: "On Duty", trips: 42, completed: 40, safetyScore: 95, phone: "9876543210" },
+  { id: "D002", name: "Ravi Sharma", license: "TN7654321", licenseExpiry: "2027-12-31", category: "Truck", status: "On Duty", trips: 78, completed: 72, safetyScore: 88, phone: "9123456780" },
+  { id: "D003", name: "Priya Singh", license: "TN9999999", licenseExpiry: "2028-03-15", category: "Bike", status: "On Duty", trips: 15, completed: 15, safetyScore: 100, phone: "9012345678" },
   { id: "D004", name: "Mohan Das", license: "TN1111111", licenseExpiry: "2023-11-01", category: "Van", status: "Suspended", trips: 30, completed: 25, safetyScore: 72, phone: "9988776655" },
 ];
 
